@@ -1,4 +1,3 @@
-const ObjectCache = require('../helpers/cache');
 const { spawn } = require('node:child_process');
 const chalk = require('chalk');
 const path = require('node:path');
@@ -21,6 +20,8 @@ function checkCommandExists(command) {
 
 const rootPath = (p) => path.resolve(process.env.ELEVENTY_ROOT, p);
 
+const memoryCache = new Map();
+
 /**
  *
  * @param { import('@11ty/eleventy/src/UserConfig') } eleventyConfig
@@ -32,14 +33,17 @@ module.exports = function (eleventyConfig, options) {
     dist: null,
     enabled: true,
     srcFiles: [],
-    cache: null,
+    cache: {
+      get: (key) => memoryCache.get(key),
+      set: (key, value) => memoryCache.set(key, value),
+      has: (key) => memoryCache.has(key),
+    },
     cacheKey: 'font-subsetting'
   }, options);
 
   if (opts.dist) eleventyConfig.addPassthroughCopy(opts.dist);
   if (opts.enabled === false) return;
 
-  const cache = new ObjectCache('font-subsetting');
   const glyphs = {
     chars: new Set(),
     add(text) {
@@ -60,7 +64,7 @@ module.exports = function (eleventyConfig, options) {
   });
 
   eleventyConfig.on('eleventy.after', async () => {
-    const cachedUnicodeHexRange = cache.get('cs');
+    const cachedUnicodeHexRange = opts.cache.get('cs');
     const CharacterSet = await import('characterset');
     const cs = new CharacterSet.default(glyphs.getUnique());
     const unicodeHexRange = cs.toHexRangeString();
@@ -123,7 +127,7 @@ module.exports = function (eleventyConfig, options) {
     await Promise.all(promises);
 
     // Cache unicode hex range for 10 years (forever...)
-    cache.set('cs', unicodeHexRange, 86400 * 365 * 10);
+    opts.cache.set('cs', unicodeHexRange, 86400 * 365 * 10);
 
     console.log(chalk.blue('[@photogabble/subsetter]'), chalk.green('[OK]'), `Complete`);
   });
