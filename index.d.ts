@@ -16,9 +16,6 @@ type EleventyPluginFontSubsettingOptions = {
   // cache is an object able to store and retrieve values with a TTL.
   // If not set then the plugin will default to an in memory cache.
   cache?: CacheInterface
-
-  // cacheKey is the key to be used for caching, defaults to "font-subsetting"
-  cacheKey ?: string
 }
 
 interface CacheInterface {
