@@ -25,23 +25,29 @@
   },
   "homepage": "https://github.com/photogabble/eleventy-plugin-font-subsetting#readme",
   "peerDependencies": {
-    "@11ty/eleventy": "*"
+    "@11ty/eleventy": ">=2.0.0-beta.1"
   },
   "peerDependenciesMeta": {
     "@11ty/eleventy": {
       "optional": true
     }
   },
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   },
+  "types": "./index.d.ts",
   "dependencies": {
     "chalk": "^4.1.1",
     "characterset": "^2.0.0"
   },
   "devDependencies": {
     "ava": "^5.1.1",
-    "c8": "^7.12.0"
+    "c8": "^7.12.0",
+    "@11ty/eleventy": "^2.0.0"
   },
   "directories": {
     "test": "tests"
