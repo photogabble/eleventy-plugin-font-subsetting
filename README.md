@@ -1,3 +1,5 @@
+# Eleventy.js Font Subsetting Plugin
+
 While adding fonts to PhotoGabble and seeking smaller assets to support people with low-bandwidth connections I began learning about Font Subsetting which I wrote about in [Font Subsetting with Eleventy.js](https://www.photogabble.co.uk/tutorials/font-subsetting-with-eleventyjs/).
 
 After writing that tutorial I continued amending the code and turned it into an #11ty plugin propper.
