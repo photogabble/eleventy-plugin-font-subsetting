@@ -9,6 +9,10 @@ type EleventyPluginFontSubsettingOptions = {
   // want font subsetting to run.
   enabled?: boolean
 
+  // When set to true will disable informational output from pyftsubset.
+  // Defaults to false.
+  quiet?: boolean
+
   // srcFiles is a list of source file pathnames, it must contain at
   // least one item.
   srcFiles: Array<string>

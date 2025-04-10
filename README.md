@@ -30,6 +30,10 @@ type EleventyPluginFontSubsettingOptions = {
     // want font subsetting to run.
     enabled?: boolean
 
+    // When set to true will disable informational output from pyftsubset.
+    // Defaults to false.
+    quiet?: boolean
+
     // srcFiles is a list of source file pathnames, it must contain at
     // least one item.
     srcFiles: Array<string>
@@ -67,7 +71,8 @@ module.exports = (eleventyConfig) => {
         './_assets/fonts/font-source-2.woff2',
       ],
       dist: './fonts',
-      enabled: process.env.ELEVENTY_ENV !== 'production'
+      enabled: process.env.ELEVENTY_ENV !== 'production',
+      quiet: true
     }
   );
 };
