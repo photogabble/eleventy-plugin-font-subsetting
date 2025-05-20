@@ -1,6 +1,6 @@
 {
   "name": "@photogabble/eleventy-plugin-font-subsetting",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Font Subsetting made easier for Eleventy.js",
   "type": "module",
   "keywords": [
