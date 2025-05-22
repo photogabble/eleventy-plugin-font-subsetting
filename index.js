@@ -26,8 +26,7 @@ function checkCommandExists(command) {
  */
 function checkPyftsubset() {
   return new Promise((resolve) => {
-    // Try executing, resolve promise based on exit code or spawn error
-    spawn("pyftsubset", ["--version"])
+    spawn("pyftsubset", ["--help"])
       .on("error", () => resolve(false))
       .on("exit", (code) => resolve(code === 0));
   });
@@ -84,8 +83,14 @@ export default function (eleventyConfig, options) {
   });
 
   eleventyConfig.on("eleventy.after", async () => {
+    const log = (...args) => {
+      if (!opts.quiet) {
+        console.log(...args);
+      }
+    };
+
     const cachedUnicodeHexRange = opts.cache.get("cs");
-    const cs = new CharacterSet.default(glyphs.getUnique());
+    const cs = new CharacterSet(glyphs.getUnique());
     const unicodeHexRange = cs.toHexRangeString();
     const rootDist = opts.dist ? rootPath(opts.dist) : false;
     let srcFiles = (opts.srcFiles ?? []).map((src) => {
@@ -104,7 +109,7 @@ export default function (eleventyConfig, options) {
       srcFiles = srcFiles.filter((file) => fs.existsSync(file.dist) === false);
 
       if (srcFiles.length === 0) {
-        console.log(
+        log(
           chalk.blue("[@photogabble/subsetter]"),
           chalk.green("[OK]"),
           "Matching cached charset found, not rebuilding fonts",
@@ -113,16 +118,16 @@ export default function (eleventyConfig, options) {
       }
     }
 
-    console.log(
+    log(
       chalk.blue("[@photogabble/subsetter]"),
       `Identified ${glyphs.chars.size} unique glyphs in use, creating subset`,
     );
-    console.log(
+    log(
       chalk.blue("[@photogabble/subsetter]"),
       "Codepoint Range:",
       unicodeHexRange,
     );
-    console.log(
+    log(
       chalk.blue("[@photogabble/subsetter]"),
       `Subsetting ${srcFiles.length} font files.`,
     );
@@ -141,7 +146,7 @@ export default function (eleventyConfig, options) {
     for (const file of srcFiles) {
       promises.push(
         new Promise((resolve, reject) => {
-          console.log(
+          log(
             chalk.blue("[@photogabble/subsetter]"),
             chalk.yellow("[..]"),
             `Processing: ${file.src}`,
@@ -163,7 +168,7 @@ export default function (eleventyConfig, options) {
           // Resolve/reject promise based on exit code
           buildProcess.on("close", (code) => {
             if (code === 0) {
-              console.log(
+              log(
                 chalk.blue("[@photogabble/subsetter]"),
                 chalk.green("[OK]"),
                 `Saved: ${file.dist}`,
@@ -187,7 +192,7 @@ export default function (eleventyConfig, options) {
     // Cache unicode hex range for 10 years (forever...)
     opts.cache.set("cs", unicodeHexRange, 86400 * 365 * 10);
 
-    console.log(
+    log(
       chalk.blue("[@photogabble/subsetter]"),
       chalk.green("[OK]"),
       `Complete`,
